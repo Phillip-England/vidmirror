@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VidMirror</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <h1>VidMirror</h1>
+    <p class="subtitle">Upload a video, pick a mirror effect, preview &amp; download</p>
+  </header>
+
+  <main>
+    <!-- Upload Zone -->
+    <section id="upload-section">
+      <div id="drop-zone">
+        <p>Drag &amp; drop a video here</p>
+        <p class="small">or</p>
+        <label class="file-btn">
+          Choose File
+          <input type="file" id="file-input" accept="video/*" hidden>
+        </label>
+      </div>
+    </section>
+
+    <!-- Effect Selector -->
+    <section id="effect-section" class="hidden">
+      <h2>Choose an Effect</h2>
+
+      <h3 class="effect-category">Mirror</h3>
+      <div id="effect-grid">
+        <button class="effect-card" data-effect="horizontal">
+          <div class="effect-icon">
+            <div class="icon-box">A</div><div class="icon-box flip-h">A</div>
+          </div>
+          <span>Horizontal</span>
+        </button>
+        <button class="effect-card" data-effect="vertical">
+          <div class="effect-icon vertical">
+            <div class="icon-box">A</div><div class="icon-box flip-v">A</div>
+          </div>
+          <span>Vertical</span>
+        </button>
+        <button class="effect-card" data-effect="quad">
+          <div class="effect-icon quad">
+            <div class="icon-box">A</div><div class="icon-box flip-h">A</div>
+            <div class="icon-box flip-v">A</div><div class="icon-box flip-hv">A</div>
+          </div>
+          <span>Quad</span>
+        </button>
+        <button class="effect-card" data-effect="diagonal">
+          <div class="effect-icon quad">
+            <div class="icon-box">A</div><div class="icon-box flip-hv">A</div>
+            <div class="icon-box flip-h">A</div><div class="icon-box flip-v">A</div>
+          </div>
+          <span>Diagonal</span>
+        </button>
+        <button class="effect-card" data-effect="kaleidoscope">
+          <div class="effect-icon quad">
+            <div class="icon-box flip-hv">A</div><div class="icon-box flip-v">A</div>
+            <div class="icon-box flip-h">A</div><div class="icon-box">A</div>
+          </div>
+          <span>Kaleidoscope</span>
+        </button>
+      </div>
+
+      <h3 class="effect-category">Color</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card" data-effect="grayscale">
+          <div class="effect-icon single"><div class="icon-box fx-grayscale">A</div></div>
+          <span>Grayscale</span>
+        </button>
+        <button class="effect-card" data-effect="sepia">
+          <div class="effect-icon single"><div class="icon-box fx-sepia">A</div></div>
+          <span>Sepia</span>
+        </button>
+        <button class="effect-card" data-effect="negative">
+          <div class="effect-icon single"><div class="icon-box fx-negative">A</div></div>
+          <span>Negative</span>
+        </button>
+        <button class="effect-card" data-effect="color_swap">
+          <div class="effect-icon single"><div class="icon-box fx-swap">A</div></div>
+          <span>Color Swap</span>
+        </button>
+      </div>
+
+      <h3 class="effect-category">Speed</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card" data-effect="reverse">
+          <div class="effect-icon single"><div class="icon-box fx-reverse">&#9664;</div></div>
+          <span>Reverse</span>
+        </button>
+        <button class="effect-card" data-effect="speed_2x">
+          <div class="effect-icon single"><div class="icon-box fx-fast">&#9654;&#9654;</div></div>
+          <span>2x Speed</span>
+        </button>
+        <button class="effect-card" data-effect="slow_mo">
+          <div class="effect-icon single"><div class="icon-box fx-slow">&#189;x</div></div>
+          <span>Slow Mo</span>
+        </button>
+      </div>
+
+      <h3 class="effect-category">Stylize</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card" data-effect="blur">
+          <div class="effect-icon single"><div class="icon-box fx-blur">A</div></div>
+          <span>Blur</span>
+        </button>
+        <button class="effect-card" data-effect="edge_detect">
+          <div class="effect-icon single"><div class="icon-box fx-edge">A</div></div>
+          <span>Edge Detect</span>
+        </button>
+        <button class="effect-card" data-effect="vignette">
+          <div class="effect-icon single"><div class="icon-box fx-vignette">A</div></div>
+          <span>Vignette</span>
+        </button>
+        <button class="effect-card" data-effect="pixelate">
+          <div class="effect-icon single"><div class="icon-box fx-pixel">A</div></div>
+          <span>Pixelate</span>
+        </button>
+        <button class="effect-card" data-effect="sharpen">
+          <div class="effect-icon single"><div class="icon-box fx-sharp">A</div></div>
+          <span>Sharpen</span>
+        </button>
+        <button class="effect-card" data-effect="emboss">
+          <div class="effect-icon single"><div class="icon-box fx-emboss">A</div></div>
+          <span>Emboss</span>
+        </button>
+        <button class="effect-card" data-effect="retro">
+          <div class="effect-icon single"><div class="icon-box fx-retro">A</div></div>
+          <span>Retro VHS</span>
+        </button>
+        <button class="effect-card" data-effect="glitch">
+          <div class="effect-icon single"><div class="icon-box fx-glitch">A</div></div>
+          <span>Glitch</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Preview -->
+    <section id="preview-section" class="hidden">
+      <h2>Preview</h2>
+      <div id="preview-container"></div>
+      <div id="actions">
+        <button id="process-btn">Process &amp; Download</button>
+      </div>
+      <div id="status" class="hidden"></div>
+      <a id="download-link" class="hidden" download>Download Processed Video</a>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
