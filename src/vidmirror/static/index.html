@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VidMirror</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=progress-1">
 </head>
 <body>
   <header>
     <h1>VidMirror</h1>
-    <p class="subtitle">Upload a video, pick a mirror effect, preview &amp; download</p>
+    <p class="subtitle">Upload a video, pick an effect, preview &amp; download</p>
   </header>
 
   <main>
@@ -22,6 +22,48 @@
           Choose File
           <input type="file" id="file-input" accept="video/*" hidden>
         </label>
+      </div>
+      <p class="divider-text">- or -</p>
+      <div id="collage-drop-zone">
+        <p>Create a Video Collage</p>
+        <p class="small">Select 2-16 videos</p>
+        <label class="file-btn">
+          Choose Multiple Videos
+          <input type="file" id="collage-file-input" accept="video/*" multiple hidden>
+        </label>
+      </div>
+    </section>
+
+    <!-- Collage Upload Status -->
+    <section id="collage-upload-section" class="hidden">
+      <h2>Selected Videos</h2>
+      <div id="collage-files-list"></div>
+      <h3 class="effect-category">Choose Collage Layout</h3>
+      <div id="collage-grid">
+        <button class="collage-card" data-effect="collage_2x1" data-videos="2">
+          <div class="collage-icon grid-2h"><div class="icon-box">1</div><div class="icon-box">2</div></div>
+          <span>2x1 (2)</span>
+        </button>
+        <button class="collage-card" data-effect="collage_1x2" data-videos="2">
+          <div class="collage-icon grid-2v"><div class="icon-box">1</div><div class="icon-box">2</div></div>
+          <span>1x2 (2)</span>
+        </button>
+        <button class="collage-card" data-effect="collage_2x2" data-videos="4">
+          <div class="collage-icon grid-4"><div class="icon-box">1</div><div class="icon-box">2</div><div class="icon-box">3</div><div class="icon-box">4</div></div>
+          <span>2x2 (4)</span>
+        </button>
+        <button class="collage-card" data-effect="collage_3x2" data-videos="6">
+          <div class="collage-icon grid-6"><div class="icon-box">1</div><div class="icon-box">2</div><div class="icon-box">3</div><div class="icon-box">4</div><div class="icon-box">5</div><div class="icon-box">6</div></div>
+          <span>3x2 (6)</span>
+        </button>
+        <button class="collage-card" data-effect="collage_3x3" data-videos="9">
+          <div class="collage-icon grid-9"><div class="icon-box">1</div><div class="icon-box">2</div><div class="icon-box">3</div><div class="icon-box">4</div><div class="icon-box">5</div><div class="icon-box">6</div><div class="icon-box">7</div><div class="icon-box">8</div><div class="icon-box">9</div></div>
+          <span>3x3 (9)</span>
+        </button>
+        <button class="collage-card" data-effect="collage_4x4" data-videos="16">
+          <div class="collage-icon grid-16"><div class="icon-box">1</div><div class="icon-box">2</div><div class="icon-box">3</div><div class="icon-box">4</div><div class="icon-box">5</div><div class="icon-box">6</div><div class="icon-box">7</div><div class="icon-box">8</div><div class="icon-box">9</div><div class="icon-box">10</div><div class="icon-box">11</div><div class="icon-box">12</div><div class="icon-box">13</div><div class="icon-box">14</div><div class="icon-box">15</div><div class="icon-box">16</div></div>
+          <span>4x4 (16)</span>
+        </button>
       </div>
     </section>
 
@@ -137,6 +179,30 @@
           <span>Glitch</span>
         </button>
       </div>
+
+      <h3 class="effect-category">Audio</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card" data-effect="remove_audio">
+          <div class="effect-icon single"><div class="icon-box fx-mute">Mute</div></div>
+          <span>Remove Audio</span>
+        </button>
+        <button class="effect-card" data-effect="extract_audio">
+          <div class="effect-icon single"><div class="icon-box fx-audio">MP3</div></div>
+          <span>Extract Audio</span>
+        </button>
+      </div>
+
+      <h3 class="effect-category">Chunk</h3>
+      <div id="chunk-panel">
+        <label for="chunk-length">Clip length in seconds</label>
+        <div class="chunk-controls">
+          <input type="number" id="chunk-length" min="1" max="3600" step="1" value="5">
+          <button id="chunk-process-btn" type="button">Chunk &amp; Download ZIP</button>
+        </div>
+        <p class="chunk-help">Clips will be named by their start time, such as chunk_001_00h00m00s.mp4.</p>
+        <div id="chunk-status" class="hidden"></div>
+        <a id="chunk-download-link" class="hidden" download>Download Video Clips ZIP</a>
+      </div>
     </section>
 
     <!-- Preview -->
@@ -146,11 +212,28 @@
       <div id="actions">
         <button id="process-btn">Process &amp; Download</button>
       </div>
+      <div id="process-progress" class="progress-wrap hidden">
+        <div class="progress-track">
+          <div id="process-progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="process-progress-text" class="progress-text">Preparing...</div>
+      </div>
       <div id="status" class="hidden"></div>
       <a id="download-link" class="hidden" download>Download Processed Video</a>
     </section>
+
+    <!-- Collage Preview -->
+    <section id="collage-preview-section" class="hidden">
+      <h2>Collage Preview</h2>
+      <div id="collage-preview-container"></div>
+      <div id="collage-actions">
+        <button id="collage-process-btn">Process &amp; Download</button>
+      </div>
+      <div id="collage-status" class="hidden"></div>
+      <a id="collage-download-link" class="hidden" download>Download Collage Video</a>
+    </section>
   </main>
 
-  <script src="/static/app.js"></script>
+  <script src="/static/app.js?v=progress-1"></script>
 </body>
 </html>
