@@ -168,6 +168,36 @@ def get_duration(input_path: Path) -> float:
         raise RuntimeError("ffprobe did not return a valid video duration") from exc
 
 
+def get_video_dimensions(input_path: Path) -> tuple[int, int]:
+    result = subprocess.run(
+        [
+            "ffprobe",
+            "-v",
+            "error",
+            "-select_streams",
+            "v:0",
+            "-show_entries",
+            "stream=width,height",
+            "-of",
+            "csv=s=x:p=0",
+            str(input_path),
+        ],
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise RuntimeError(f"ffprobe failed:\n{result.stderr}")
+
+    width_text, separator, height_text = result.stdout.strip().partition("x")
+    if not separator:
+        raise RuntimeError("ffprobe did not return valid video dimensions")
+
+    try:
+        return int(width_text), int(height_text)
+    except ValueError as exc:
+        raise RuntimeError("ffprobe did not return valid video dimensions") from exc
+
+
 def chunk_video(input_path: Path, output_dir: Path, clip_length: float) -> list[Path]:
     """Split a video into timestamp-named clips with the requested length."""
     duration = get_duration(input_path)
@@ -222,6 +252,157 @@ def chunk_video(input_path: Path, output_dir: Path, clip_length: float) -> list[
         raise RuntimeError("ffmpeg did not create any video chunks")
 
     return outputs
+
+
+def export_vertical_short(
+    input_path: Path,
+    output_path: Path,
+    start_time: float,
+    end_time: float,
+    crop_x: int,
+    crop_y: int,
+    crop_width: int,
+    crop_height: int,
+) -> None:
+    """Trim a source video and export a 9:16 vertical clip."""
+    if end_time <= start_time:
+        raise RuntimeError("End time must be greater than start time")
+
+    source_width, source_height = get_video_dimensions(input_path)
+    crop_x, crop_width = _normalize_crop_region(crop_x, crop_width, source_width)
+    crop_y, crop_height = _normalize_crop_region(crop_y, crop_height, source_height)
+
+    duration = end_time - start_time
+    filter_graph = (
+        f"crop={crop_width}:{crop_height}:{crop_x}:{crop_y},"
+        "scale=1080:1920:flags=lanczos"
+    )
+
+    _run_ffmpeg(
+        [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            f"{start_time:.3f}",
+            "-i",
+            str(input_path),
+            "-t",
+            f"{duration:.3f}",
+            "-vf",
+            filter_graph,
+            "-c:v",
+            "libx264",
+            "-preset",
+            "fast",
+            "-crf",
+            "21",
+            "-c:a",
+            "aac",
+            "-b:a",
+            "192k",
+            str(output_path),
+        ]
+    )
+
+
+def remove_column(input_path: Path, output_path: Path, x: int, width: int) -> None:
+    """Remove a vertical band, joining the remaining left and right video regions."""
+    source_width, _ = get_video_dimensions(input_path)
+    x, width = _normalize_region(x, width, source_width)
+
+    if x == 0:
+        filter_graph = f"crop={source_width - width}:ih:{width}:0"
+    elif x + width == source_width:
+        filter_graph = f"crop={x}:ih:0:0"
+    else:
+        right_width = source_width - x - width
+        filter_graph = (
+            f"[0:v]crop={x}:ih:0:0[left];"
+            f"[0:v]crop={right_width}:ih:{x + width}:0[right];"
+            "[left][right]hstack=inputs=2"
+        )
+
+    _run_ffmpeg(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(input_path),
+            "-filter_complex" if "[" in filter_graph else "-vf",
+            f"{filter_graph},scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "fast",
+            "-crf",
+            "23",
+            "-c:a",
+            "aac",
+            str(output_path),
+        ]
+    )
+
+
+def remove_row(input_path: Path, output_path: Path, y: int, height: int) -> None:
+    """Remove a horizontal band, joining the remaining top and bottom video regions."""
+    _, source_height = get_video_dimensions(input_path)
+    y, height = _normalize_region(y, height, source_height)
+
+    if y == 0:
+        filter_graph = f"crop=iw:{source_height - height}:0:{height}"
+    elif y + height == source_height:
+        filter_graph = f"crop=iw:{y}:0:0"
+    else:
+        bottom_height = source_height - y - height
+        filter_graph = (
+            f"[0:v]crop=iw:{y}:0:0[top];"
+            f"[0:v]crop=iw:{bottom_height}:0:{y + height}[bottom];"
+            "[top][bottom]vstack=inputs=2"
+        )
+
+    _run_ffmpeg(
+        [
+            "ffmpeg",
+            "-y",
+            "-i",
+            str(input_path),
+            "-filter_complex" if "[" in filter_graph else "-vf",
+            f"{filter_graph},scale=trunc(iw/2)*2:trunc(ih/2)*2",
+            "-c:v",
+            "libx264",
+            "-preset",
+            "fast",
+            "-crf",
+            "23",
+            "-c:a",
+            "aac",
+            str(output_path),
+        ]
+    )
+
+
+def _normalize_region(start: int, size: int, source_size: int) -> tuple[int, int]:
+    if source_size < 4:
+        raise RuntimeError("Video is too small for row or column removal")
+
+    start = max(0, min(int(start), source_size - 1))
+    size = max(1, min(int(size), source_size - start))
+
+    if source_size - size < 2:
+        size = source_size - 2
+    if start + size > source_size:
+        start = source_size - size
+
+    return start, size
+
+
+def _normalize_crop_region(start: int, size: int, source_size: int) -> tuple[int, int]:
+    if source_size < 2:
+        raise RuntimeError("Video is too small to crop")
+
+    start = max(0, min(int(start), source_size - 1))
+    size = max(1, min(int(size), source_size - start))
+    return start, size
 
 
 def horizontal_mirror(input_path: Path, output_path: Path) -> None:

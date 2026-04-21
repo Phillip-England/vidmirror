@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VidMirror</title>
-  <link rel="stylesheet" href="/static/style.css?v=progress-1">
+  <link rel="stylesheet" href="/static/style.css?v=shorts-1">
 </head>
 <body>
   <header>
@@ -180,6 +180,22 @@
         </button>
       </div>
 
+      <h3 class="effect-category">Remove Rows &amp; Columns</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card region-card" data-region-operation="remove_column">
+          <div class="effect-icon single">
+            <div class="icon-box fx-remove-column">Cut</div>
+          </div>
+          <span>Remove Column</span>
+        </button>
+        <button class="effect-card region-card" data-region-operation="remove_row">
+          <div class="effect-icon single">
+            <div class="icon-box fx-remove-row">Cut</div>
+          </div>
+          <span>Remove Row</span>
+        </button>
+      </div>
+
       <h3 class="effect-category">Audio</h3>
       <div class="effect-grid-row">
         <button class="effect-card" data-effect="remove_audio">
@@ -203,6 +219,110 @@
         <div id="chunk-status" class="hidden"></div>
         <a id="chunk-download-link" class="hidden" download>Download Video Clips ZIP</a>
       </div>
+
+      <h3 class="effect-category">Create Shorts</h3>
+      <div class="effect-grid-row">
+        <button class="effect-card" data-tool="shorts">
+          <div class="effect-icon single">
+            <div class="icon-box fx-shorts">9:16</div>
+          </div>
+          <span>Vertical Short</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Row/Column Removal -->
+    <section id="region-section" class="hidden">
+      <h2 id="region-title">Remove Column</h2>
+      <p class="region-help">Drag over the part of the video you want to remove.</p>
+      <div id="region-stage">
+        <video id="region-video" muted loop playsinline></video>
+        <div id="region-overlay">
+          <div id="region-selection"></div>
+        </div>
+      </div>
+      <div id="region-readout">Selection: 0 px</div>
+      <div id="region-actions">
+        <button id="region-process-btn">Remove Selection &amp; Download</button>
+      </div>
+      <div id="region-progress" class="progress-wrap hidden">
+        <div class="progress-track">
+          <div id="region-progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="region-progress-text" class="progress-text">Preparing...</div>
+      </div>
+      <div id="region-status" class="hidden"></div>
+      <a id="region-download-link" class="hidden" download>Download Edited Video</a>
+    </section>
+
+    <section id="shorts-section" class="hidden">
+      <h2>Vertical Short</h2>
+      <p class="shorts-help">Trim the moment you want, then drag and resize the 9:16 frame to choose what stays in view.</p>
+      <div class="shorts-layout">
+        <div class="shorts-editor">
+          <div id="shorts-stage">
+            <video id="shorts-video" controls playsinline></video>
+            <div id="shorts-overlay">
+              <div id="shorts-selection">
+                <button id="shorts-resize-handle" type="button" aria-label="Resize crop frame"></button>
+              </div>
+            </div>
+          </div>
+          <div class="shorts-playback-actions">
+            <button id="shorts-play-toggle-btn" type="button">Pause Preview</button>
+          </div>
+          <div id="shorts-readout">Crop: 9:16 portrait frame</div>
+        </div>
+        <div class="shorts-preview-panel">
+          <div id="shorts-preview-frame">
+            <video id="shorts-preview-video" muted loop playsinline></video>
+          </div>
+          <p class="shorts-preview-label">Short preview</p>
+        </div>
+      </div>
+
+      <div class="shorts-timeline">
+        <div class="shorts-timeline-header">
+          <span id="shorts-time-range-label">0.0s - 0.0s</span>
+          <span id="shorts-duration-label">Length: 0.0s</span>
+        </div>
+        <div class="shorts-playhead-bar" aria-hidden="true">
+          <div id="shorts-playhead"></div>
+        </div>
+        <label class="shorts-slider-group" for="shorts-start">
+          <span>Start</span>
+          <input type="range" id="shorts-start" min="0" max="0" step="0.1" value="0">
+        </label>
+        <label class="shorts-slider-group" for="shorts-end">
+          <span>End</span>
+          <input type="range" id="shorts-end" min="0" max="0" step="0.1" value="0">
+        </label>
+        <div class="shorts-jump-actions">
+          <button id="shorts-set-start-btn" type="button">Set Start to Current Frame</button>
+          <button id="shorts-set-end-btn" type="button">Set End to Current Frame</button>
+        </div>
+        <label class="shorts-loop-toggle" for="shorts-loop-toggle">
+          <input type="checkbox" id="shorts-loop-toggle">
+          <span>Loop selected range</span>
+        </label>
+        <label class="shorts-delay-control" for="shorts-end-preview-delay">
+          <span>End preview lead-in</span>
+          <input type="number" id="shorts-end-preview-delay" min="0" max="10" step="0.1" value="2.0">
+          <span class="shorts-delay-unit">seconds</span>
+        </label>
+      </div>
+
+      <div id="shorts-actions">
+        <button id="shorts-process-btn" type="button">Create Short &amp; Download</button>
+      </div>
+      <div id="shorts-progress" class="progress-wrap hidden">
+        <div class="progress-track">
+          <div id="shorts-progress-fill" class="progress-fill"></div>
+        </div>
+        <div id="shorts-progress-text" class="progress-text">Preparing...</div>
+      </div>
+      <div id="shorts-status" class="hidden"></div>
+      <a id="shorts-download-link" class="hidden" download>Download Vertical Short</a>
     </section>
 
     <!-- Preview -->
@@ -234,6 +354,6 @@
     </section>
   </main>
 
-  <script src="/static/app.js?v=progress-1"></script>
+  <script src="/static/app.js?v=shorts-1"></script>
 </body>
 </html>

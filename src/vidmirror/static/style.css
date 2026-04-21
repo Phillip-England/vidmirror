@@ -413,6 +413,21 @@ h2 {
 .fx-slow { color: #8b5cf6 !important; font-size: 0.7rem !important; }
 .fx-mute { color: #ef4444 !important; font-size: 0.65rem !important; }
 .fx-audio { color: #60a5fa !important; font-size: 0.65rem !important; }
+.fx-shorts {
+  color: #f59e0b !important;
+  font-size: 0.68rem !important;
+  background: linear-gradient(180deg, #352407, #2a2a2a) !important;
+}
+.fx-remove-column {
+  background: linear-gradient(90deg, #2a2a2a 35%, #ef4444 35% 55%, #2a2a2a 55%) !important;
+  color: #fff !important;
+  font-size: 0.62rem !important;
+}
+.fx-remove-row {
+  background: linear-gradient(180deg, #2a2a2a 35%, #ef4444 35% 55%, #2a2a2a 55%) !important;
+  color: #fff !important;
+  font-size: 0.62rem !important;
+}
 
 /* Chunk */
 #chunk-panel {
@@ -494,6 +509,422 @@ h2 {
 
 #chunk-download-link:hover {
   background: #2563eb;
+}
+
+/* Row/column removal */
+.region-help,
+#region-readout {
+  color: #aaa;
+  text-align: center;
+}
+
+.region-help {
+  margin-bottom: 1rem;
+}
+
+#region-stage {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 0.75rem;
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#region-video {
+  display: block;
+  max-width: 100%;
+  max-height: 62vh;
+}
+
+#region-overlay {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+#region-selection {
+  position: absolute;
+  background: rgba(239, 68, 68, 0.34);
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.22);
+  pointer-events: none;
+}
+
+#region-selection.column-selection {
+  cursor: ew-resize;
+}
+
+#region-selection.row-selection {
+  cursor: ns-resize;
+}
+
+#region-readout {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+#region-actions {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+#region-process-btn {
+  padding: 0.7rem 2rem;
+  background: #6ee7b7;
+  color: #111;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#region-process-btn:hover {
+  background: #34d399;
+}
+
+#region-process-btn:disabled {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+#region-status {
+  text-align: center;
+  padding: 0.5rem;
+  color: #aaa;
+}
+
+#region-download-link {
+  display: block;
+  text-align: center;
+  padding: 0.7rem 2rem;
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  max-width: 300px;
+  margin: 0.5rem auto;
+  transition: background 0.2s;
+}
+
+#region-download-link:hover {
+  background: #2563eb;
+}
+
+/* Shorts tool */
+.shorts-help,
+#shorts-readout,
+.shorts-preview-label,
+#shorts-status,
+.shorts-timeline-header {
+  color: #aaa;
+}
+
+.shorts-help {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.shorts-layout {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+}
+
+.shorts-editor,
+.shorts-preview-panel,
+.shorts-timeline {
+  background: #111;
+  border: 1px solid #2e2e2e;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+#shorts-stage {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 0.75rem;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#shorts-video {
+  display: block;
+  max-width: 100%;
+  max-height: 62vh;
+}
+
+#shorts-overlay {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+#shorts-selection {
+  position: absolute;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.42);
+  background: rgba(245, 158, 11, 0.08);
+}
+
+#shorts-selection.is-dragging,
+#shorts-overlay.is-dragging {
+  cursor: grabbing;
+}
+
+#shorts-resize-handle {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px 0 6px 0;
+  background: #f59e0b;
+  cursor: nwse-resize;
+}
+
+#shorts-readout {
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.shorts-playback-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+}
+
+#shorts-play-toggle-btn {
+  padding: 0.65rem 1.1rem;
+  border: none;
+  border-radius: 8px;
+  background: #1f2937;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shorts-preview-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#shorts-preview-frame {
+  position: relative;
+  width: min(100%, 220px);
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: #000;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+#shorts-preview-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.shorts-preview-label {
+  font-size: 0.9rem;
+}
+
+.shorts-timeline {
+  max-width: 760px;
+  margin: 1rem auto 0;
+}
+
+.shorts-timeline-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+  font-size: 0.95rem;
+}
+
+.shorts-playhead-bar {
+  position: relative;
+  height: 10px;
+  margin-bottom: 0.9rem;
+  border-radius: 999px;
+  background: #2a2a2a;
+  overflow: hidden;
+}
+
+#shorts-playhead {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #60a5fa;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.shorts-slider-group {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
+.shorts-slider-group span {
+  color: #ddd;
+  font-weight: 600;
+}
+
+.shorts-slider-group input[type="range"] {
+  width: 100%;
+  height: 22px;
+  cursor: pointer;
+}
+
+.shorts-slider-group input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 999px;
+}
+
+.shorts-slider-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -6px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #f59e0b;
+}
+
+.shorts-slider-group input[type="range"]::-moz-range-track {
+  height: 8px;
+  background: #2a2a2a;
+  border-radius: 999px;
+}
+
+.shorts-slider-group input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #111;
+  border-radius: 999px;
+  background: #f59e0b;
+}
+
+.shorts-jump-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.shorts-loop-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.25rem;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.shorts-loop-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: #f59e0b;
+}
+
+.shorts-delay-control {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.shorts-delay-control input {
+  width: 92px;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #181818;
+  color: #f5f5f5;
+  font-size: 0.95rem;
+}
+
+.shorts-delay-unit {
+  color: #aaa;
+  font-weight: 500;
+}
+
+.shorts-jump-actions button,
+#shorts-process-btn,
+#shorts-play-toggle-btn {
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.shorts-jump-actions button,
+#shorts-play-toggle-btn {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+#shorts-actions {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+#shorts-process-btn {
+  background: #f59e0b;
+  color: #111;
+}
+
+#shorts-process-btn:disabled,
+.shorts-jump-actions button:disabled,
+#shorts-play-toggle-btn:disabled {
+  background: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+#shorts-status {
+  text-align: center;
+  padding: 0.5rem;
+}
+
+#shorts-download-link {
+  display: block;
+  text-align: center;
+  padding: 0.7rem 2rem;
+  background: #3b82f6;
+  color: #fff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  max-width: 320px;
+  margin: 0.5rem auto;
 }
 
 /* Preview */
@@ -637,4 +1068,33 @@ h2 {
 
 section {
   margin-bottom: 2rem;
+}
+
+@media (min-width: 860px) {
+  .shorts-layout {
+    grid-template-columns: minmax(0, 1fr) 260px;
+  }
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 1rem 0.75rem 2rem;
+  }
+
+  #drop-zone,
+  #collage-drop-zone,
+  .shorts-editor,
+  .shorts-preview-panel,
+  .shorts-timeline {
+    padding: 0.85rem;
+  }
+
+  .shorts-jump-actions {
+    display: grid;
+  }
+
+  #shorts-process-btn,
+  .shorts-jump-actions button {
+    width: 100%;
+  }
 }
